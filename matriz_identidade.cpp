@@ -48,7 +48,7 @@ int main() {
 
     vector<vector<double>> matrizIdentidade = calcularMatrizIdentidade(matriz);
 
-    cout << "Matriz inversa:" << endl;
+    cout << "Matriz identidade:" << endl;
     imprimirMatriz(matrizIdentidade);
 
     return 0;
