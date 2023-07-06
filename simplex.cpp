@@ -40,7 +40,47 @@ vector<vector<double>> calcularMatrizInversa(vector<vector<double>>& matriz) {
         }
         matrizExpandida[i][i + n] = 1.0;
     }
+// Função para permutar linhas da matriz
+void permutarLinhas(vector<vector<double>>& matriz, int i, int j) {
+    int colunas = matriz[0].size();
 
+    for (int k = 0; k < colunas; k++) {
+        double temp = matriz[i][k];
+        matriz[i][k] = matriz[j][k];
+        matriz[j][k] = temp;
+    }
+}
+
+// Função para calcular a matriz inversa
+vector<vector<double>> calcularMatrizInversa(vector<vector<double>>& matriz) {
+    int n = matriz.size();
+
+    // Criar uma matriz expandida com a matriz original e uma matriz identidade
+    vector<vector<double>> matrizExpandida(n, vector<double>(2 * n, 0.0));
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            matrizExpandida[i][j] = matriz[i][j];
+        }
+        matrizExpandida[i][i + n] = 1.0;
+    }
+
+    // Aplicar a eliminação de Gauss
+    for (int i = 0; i < n; i++) {
+        if (matrizExpandida[i][i] == 0.0) {
+            // Se o pivô é zero, permuta a linha com uma linha não nula abaixo
+            bool encontrouLinhaNaoNula = false;
+            for (int j = i + 1; j < n; j++) {
+                if (matrizExpandida[j][i] != 0.0) {
+                    permutarLinhas(matrizExpandida, i, j);
+                    encontrouLinhaNaoNula = true;
+                    break;
+                }
+            }
+            if (!encontrouLinhaNaoNula) {
+                cout << "A matriz não é invertível." << endl;
+                return matrizExpandida;
+            }
+        }
     // Aplicar a eliminação de Gauss
     for (int i = 0; i < n; i++) {
         if (matrizExpandida[i][i] == 0.0) {
@@ -62,7 +102,15 @@ vector<vector<double>> calcularMatrizInversa(vector<vector<double>>& matriz) {
         for (int j = 0; j < n; j++) {
             if (i != j) {
                 double ratio = matrizExpandida[j][i] / matrizExpandida[i][i];
+        for (int j = 0; j < n; j++) {
+            if (i != j) {
+                double ratio = matrizExpandida[j][i] / matrizExpandida[i][i];
 
+                for (int k = 0; k < 2 * n; k++) {
+                    matrizExpandida[j][k] -= ratio * matrizExpandida[i][k];
+                }
+            }
+        }
                 for (int k = 0; k < 2 * n; k++) {
                     matrizExpandida[j][k] -= ratio * matrizExpandida[i][k];
                 }
@@ -75,8 +123,20 @@ vector<vector<double>> calcularMatrizInversa(vector<vector<double>>& matriz) {
         double divisor = matrizExpandida[i][i];
         for (int j = 0; j < 2 * n; j++) {
             matrizExpandida[i][j] /= divisor;
+
+    // Normalizar as linhas da matriz expandida
+    for (int i = 0; i < n; i++) {
+        double divisor = matrizExpandida[i][i];
+        for (int j = 0; j < 2 * n; j++) {
+            matrizExpandida[i][j] /= divisor;
         }
     }
+
+    // Extrair a matriz inversa da matriz expandida
+    vector<vector<double>> matrizInversa(n, vector<double>(n, 0.0));
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            matrizInversa[i][j] = matrizExpandida[i][j + n];
 
     // Extrair a matriz inversa da matriz expandida
     vector<vector<double>> matrizInversa(n, vector<double>(n, 0.0));
