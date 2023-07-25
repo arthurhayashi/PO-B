@@ -1,6 +1,5 @@
 // Alunos: Arthur Hayashi e Vitor Siqueira
 // Trabalho Computacional 1 Matriz Inversa
-//AAAAAAAAA
 
 #include <iostream>
 #include <vector>
