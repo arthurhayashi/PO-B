@@ -10,6 +10,12 @@ int tamN;
 vector<double> cB, cR, b, n, xChapeu;
 vector<vector<double> > B, N, BInversa, l, u;
 
+vector<double> resolver(const vector<int> &simbolos, int it);
+vector<double> resolveSistema(const vector<double> &b);
+vector<vector<double> > trocaLinhas(vector<vector<double> > matriz, int linha, int it);
+vector<vector<double> > identidade(const vector<vector<double> > &matriz);
+vector<vector<double> > inversa(const vector<vector<double> > &matriz);
+
 void Print(string txt, vector<vector<double> > &matriz)
 {
     cout << txt << endl;
@@ -104,7 +110,7 @@ bool comparaMatriz(vector<vector<double> > &matriz1, vector<vector<double> > &ma
 {
     if (matriz1.size() != matriz2.size())
     {
-        throw runtime_error("Tamanho diferente entre matrizes!");
+        cout <<("Tamanho diferente entre matrizes!");
     }
 
     for (size_t i = 0; i < matriz1.size(); i++)
@@ -125,7 +131,7 @@ double multiplica(vector<double> &vetor1, vector<double> &vetor2)
 {
     if (vetor1.size() != vetor2.size())
     {
-        throw runtime_error("Tamanho diferente entre vetores!");
+        cout <<("Tamanho diferente entre vetores!");
     }
 
     double res = 0;
@@ -142,7 +148,7 @@ vector<double> multiplica(vector<double> &vetor, vector<vector<double> > &matriz
 {
     if (vetor.size() != matriz.size())
     {
-        throw runtime_error("Tamanho diferente entre vetor e matriz!");
+        cout <<("Tamanho diferente entre vetor e matriz!");
     }
 
     vector<double> res(vetor.size(), 0);
@@ -162,7 +168,7 @@ vector<vector<double> > multiplica(vector<vector<double> > &matriz1, vector<vect
 {
     if (matriz1.size() != matriz2[0].size())
     {
-        throw runtime_error("Tamanho diferente entre matrizes!");
+        cout <<("Tamanho diferente entre matrizes!");
     }
 
     vector<vector<double> > res(matriz1.size(), vector<double>(matriz1.size(), 0));
@@ -198,7 +204,7 @@ vector<vector<double> > trocaLinhas(vector<vector<double> > matriz, int linha, i
 {
     if (it > fatorial(matriz.size()) || it <= 0)
     {
-        throw runtime_error("Matriz inválida");
+        cout <<("Matriz inválida");
     }
 
     int troca = 0;
@@ -294,7 +300,7 @@ void Simplex(bool max, vector<double> CB, vector<vector<double> > matriz, vector
     }
 
     cR = resolver(simbolos, 1);
-    Print("cR: ",cR);
+    Print("cR: ", cR);
 }
 
 void trocaColunas(int col1, int col2)
@@ -355,7 +361,7 @@ vector<double> resolver(const vector<int> &simbolos, int it)
     {
         if (xChapeu[i] < 0)
         {
-            // throw runtime_error("Sistema Ax = b fere a condição de não-negatividade");
+            // cout <<("Sistema Ax = b fere a condição de não-negatividade");
         }
     }
 
@@ -396,7 +402,7 @@ vector<double> resolver(const vector<int> &simbolos, int it)
     {
         if (it > fatorial(B.size()) || it <= 0)
         {
-            throw runtime_error("Sistema sem solução");
+            cout <<("Sistema sem solução");
         }
 
         it++;
@@ -425,7 +431,6 @@ vector<double> resolver(const vector<int> &simbolos, int it)
     }
     return y;
 }
-
 
 double det(const vector<vector<double> > &matriz)
 {
@@ -486,7 +491,7 @@ vector<vector<double> > inversa(const vector<vector<double> > &matriz)
     // Tratamento para matriz singular
     if (det(matriz) == 0)
     {
-        throw runtime_error("Matriz singular!");
+        cout <<("Matriz singular!");
     }
 
     vector<vector<double> > inversa(matriz.size(), vector<double>(matriz[0].size(), 0));
@@ -525,7 +530,7 @@ vector<vector<double> > identidade(const vector<vector<double> > &matriz)
     return identidade;
 }
 
-int DecompLU(const vector<vector<double> > &matriz)
+void DecompLU(const vector<vector<double> > &matriz)
 {
     l = vector<vector<double> >(matriz.size(), vector<double>(matriz.size(), 0));
     u = vector<vector<double> >(matriz.size(), vector<double>(matriz.size(), 0));
@@ -575,7 +580,6 @@ int DecompLU(const vector<vector<double> > &matriz)
             }
         }
     }
-    return 0;
 }
 
 vector<double> resolveSistema(const vector<double> &b)

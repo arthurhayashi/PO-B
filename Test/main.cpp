@@ -1,5 +1,7 @@
 #include <iostream>
 #include <vector>
+#include <math.h>
+#include <string>
 #include ".\auxiliar.h"
 
 using namespace std;
