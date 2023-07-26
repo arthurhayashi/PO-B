@@ -2,7 +2,7 @@
 #include <vector>
 #include <cmath>
 
-#include ".\Utils\auxiliar.cpp"
+#include ".\Utils\auxiliar.h"
 #include "decompLU.cpp"
 
 using namespace std;

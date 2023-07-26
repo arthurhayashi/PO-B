@@ -3,8 +3,8 @@
 
 #include "matriz.cpp"
 #include "decompLU.cpp"
-#include "simplex.cpp"
-#include ".\Utils\auxiliar.cpp"
+#include "simplex.h"
+#include ".\Utils\auxiliar.h"
 
 using namespace std;
 

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 
-#include ".\Utils\auxiliar.cpp"
+#include ".\Utils\auxiliar.h"
 
 using namespace std;
 

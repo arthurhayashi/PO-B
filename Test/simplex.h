@@ -2,7 +2,7 @@
 #include <vector>
 #include <cmath>
 
-#include ".\Utils\auxiliar.cpp"
+#include ".\Utils\auxiliar.h"
 #include "decompLU.cpp"
 #include "matriz.cpp"
 
@@ -13,7 +13,7 @@ int tamN;
 vector<double> cB, cR, b, n, xChapeu;
 vector<vector<double>> B, N, BInversa;
 
-int Simplex(bool max, vector<double> CB, vector<vector<double>> matriz, vector<int> simbolos)
+void Simplex(bool max, vector<double> CB, vector<vector<double>> matriz, vector<int> simbolos)
 {
     cB = CB;
 
@@ -65,7 +65,7 @@ int Simplex(bool max, vector<double> CB, vector<vector<double>> matriz, vector<i
     }
 
     cR = resolver(simbolos, 1);
-    return 0;
+    Print1double("cR: ",cR);
 }
 
 void trocaColunas(int col1, int col2)
