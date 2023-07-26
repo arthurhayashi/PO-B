@@ -1,10 +1,6 @@
 #include <iostream>
 #include <vector>
-
-#include "matriz.cpp"
-#include "decompLU.cpp"
-#include "simplex.h"
-#include ".\Utils\auxiliar.h"
+#include ".\auxiliar.h"
 
 using namespace std;
 
@@ -42,7 +38,7 @@ int main()
         {0, 1, 3.5}
     };
         */
-    vector<vector<double>> A;
+    vector<vector<double> > A;
     vector<int> simbolos;
     vector<double> fx;
 
@@ -51,7 +47,7 @@ int main()
     cin >> tam;
     cout << endl;
 
-    A = vector<vector<double>>(tam, vector<double>(tam));
+    A = vector<vector<double> >(tam, vector<double>(tam));
     simbolos = vector<int>(tam);
     fx = vector<double>(tam);
 
@@ -103,7 +99,7 @@ int main()
 
     cout << endl;
     cout << "det(A) = " << det(A) << "\n\n";
-    Print2double("A:", A);
+    Print("A:", A);
 
     Simplex(max, fx, A, simbolos);
     return 0;
