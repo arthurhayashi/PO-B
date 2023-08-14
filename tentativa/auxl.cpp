@@ -518,9 +518,9 @@ private:
 
 int main() {
     // Example usage:
-    vector<double> cB = { 3, 1 };
-    vector<vector<double>> matriz = { { 1, 1, 1 }, { 1, -1, 1 } };
-    vector<int> simbolos = { 1, -1, -1, -1 }; // 1 for <=, -1 for >=
+    vector<double> cB = {-2, 1 ,0};
+    vector<vector<double>> matriz = { { 1, 1, 6 }, { 1, -1, 4 },{ -1, 1, 4 } };
+    vector<int> simbolos = { 1, 1, 1}; // 1 for <=, -1 for >=
 
     Simplex simplex(false, cB, matriz, simbolos);
 
