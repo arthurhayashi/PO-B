@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 
@@ -330,6 +331,78 @@ public:
         }
 
         return lambdaSimplex;
+    }
+};
+
+class custosRel
+{
+public:
+    vector<double> Custos_Relativos(const std::vector<double> &lambdaSimplex, const std::vector<double> &custoNaoBasico, const std::vector<std::vector<double>> &matrizNaoBasica)
+    {
+        int rows = matrizNaoBasica.size();
+        int cols = matrizNaoBasica[0].size();
+
+        std::vector<double> custoRelativoNaoBasico = custoNaoBasico;
+
+        for (int j = 0; j < cols; ++j)
+        {
+            for (int k = 0; k < rows; ++k)
+            {
+                custoRelativoNaoBasico[j] -= lambdaSimplex[k] * matrizNaoBasica[k][j];
+            }
+        }
+
+        return custoRelativoNaoBasico;
+    }
+};
+
+class calculk
+{
+public:
+    int Calcula_k(const std::vector<double> &custoRelativoNaoBasico)
+    {
+        auto minElementIt = std::min_element(custoRelativoNaoBasico.begin(), custoRelativoNaoBasico.end());
+        int k = std::distance(custoRelativoNaoBasico.begin(), minElementIt);
+        return k;
+    }
+};
+
+
+class otimil
+{
+public:
+    bool Otimalidade(const std::vector<double> &custoRelativoNaoBasico, int k)
+    {
+        if (custoRelativoNaoBasico[k] >= 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+};
+
+class direcao
+{
+public:
+    std::vector<double> Direcao_simplex(const std::vector<std::vector<double>> &BasicaInversa, const std::vector<std::vector<double>> &matrizA, int k, const std::vector<int> &naoBasicas)
+    {
+        int numRows = matrizA.size();
+        funcaoEx fun;
+        std::vector<double> colunaK(numRows);
+
+        for (int i = 0; i < numRows; ++i)
+        {
+            colunaK[i] = matrizA[i][naoBasicas[k]];
+        }
+
+        std::vector<std::vector<double>> colunaKMat(1, colunaK); // Convert colunaK to a matrix
+
+        std::vector<double> y = fun.Multiplicacao_matrizes(BasicaInversa, fun.Transposta(colunaKMat))[0]; // Extract the first row of the result
+
+        return y;
     }
 };
 
