@@ -367,7 +367,6 @@ public:
     }
 };
 
-
 class otimil
 {
 public:
@@ -403,6 +402,78 @@ public:
         std::vector<double> y = fun.Multiplicacao_matrizes(BasicaInversa, fun.Transposta(colunaKMat))[0]; // Extract the first row of the result
 
         return y;
+    }
+};
+
+class CalculaL
+{
+public:
+    int Calcula_l(const std::vector<double> &y, const std::vector<double> &xRelativoBasico)
+    {
+        const double MAXINT = std::numeric_limits<double>::max();  // Define the maximum value for comparison
+
+        // Check if y is not greater than 0
+        bool seguro = false;
+        for (size_t i = 0; i < y.size(); ++i)
+        {
+            if (y[i] > 0)
+            {
+                seguro = true;
+                break;
+            }
+        }
+        if (!seguro)
+        {
+            return -1;  // Returning -1 to indicate "false"
+        }
+
+        std::vector<double> razoes;
+        for (size_t i = 0; i < xRelativoBasico.size(); ++i)
+        {
+            if (y[i] <= 0)
+            {
+                razoes.push_back(MAXINT);
+            }
+            else
+            {
+                razoes.push_back(xRelativoBasico[i] / y[i]);
+            }
+        }
+
+        double passo = *std::min_element(razoes.begin(), razoes.end());
+        int l = std::distance(razoes.begin(), std::find(razoes.begin(), razoes.end(), passo));
+
+        return l;
+    }
+};
+
+class TrocaKAndL
+{
+public:
+    std::pair<std::vector<int>, std::vector<int>> Troca_k_l(const std::vector<int> &basicas, const std::vector<int> &naoBasicas, int k, int l)
+    {
+        std::vector<int> newBasicas = basicas;
+        std::vector<int> newNaoBasicas = naoBasicas;
+
+        int aux = newBasicas[l];
+        newBasicas[l] = newNaoBasicas[k];
+        newNaoBasicas[k] = aux;
+
+        return std::make_pair(newBasicas, newNaoBasicas);
+    }
+};
+
+class ValorFuncao
+{
+public:
+    double Valor_funcao(const std::vector<double> &funcaoZ, const std::vector<double> &xRelativoBasico, const std::vector<int> &basicas)
+    {
+        double resultado = 0.0;
+        for (size_t i = 0; i < xRelativoBasico.size(); ++i)
+        {
+            resultado += funcaoZ[basicas[i]] * xRelativoBasico[i];
+        }
+        return resultado;
     }
 };
 
