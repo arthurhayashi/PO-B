@@ -277,7 +277,7 @@ def main
     puts "it: #{it}"
     matrizBasica = Cria_submatriz(matrizA, basicas)
     matrizNaoBasica = Cria_submatriz(matrizA, naoBasicas)
-    # puts 'basica: ',matrizBasica
+    puts "basica: ",matrizBasica
     matrizBasicaInversa, independentes = Inversa(
       matrizBasica, independentes)
 
