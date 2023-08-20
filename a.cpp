@@ -511,8 +511,9 @@ public:
             }
             novaFuncao.push_back(std::stof(inputString));
             leitura.funcoes.push_back(novaFuncao);
+            cout <<"Passa por aqui loop for func"<< endl;
         }
-
+        cout <<"Passou por aqui Termino Loop"<< endl;
         return leitura;
     }
 };
@@ -538,15 +539,20 @@ int main()
     separaMatriz MatrizAux;
 
     leitura::SeparacaoLeituras leitura = LeituraAux.Leituras();                                             
+    cout <<"Passou por aqui Leitura"<< endl;
     separaMatriz::SeparacaoResult matriz = MatrizAux.Separacao_da_matriz(leitura.funcaoZ, leitura.funcoes);
+    cout <<"Passou por aqui Separação"<< endl;
     
     separaMatriz::SeparacaoResult indFixo;
     indFixo.independentes = matriz.independentes;
+    cout <<"Passou por aqui Indice Fixo"<< endl;
     
     leitura::SeparacaoLeituras funcaoFin;
     funcaoFin.funcaoZ = leitura.funcaoZ; 
+    cout <<"Passou por aqui Func Fin"<< endl;
 
     int tam = leitura.funcaoZ.size(); 
+    cout <<"Passou por aqui Tam"<< endl;
 
     if (leitura.minMax == "max")
     {
