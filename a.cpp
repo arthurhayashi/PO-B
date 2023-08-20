@@ -2,19 +2,20 @@
 #include <vector>
 #include <cmath>
 #include <algorithm>
+#include <iomanip>
 
 using namespace std;
 
 class funcaoEx
 {
 public:
-    vector<vector<double>> Multiplicacao_matrizes(const vector<vector<double>> &matrizA, const vector<vector<double>> &matrizB)
+    vector<vector<double> > Multiplicacao_matrizes(const vector<vector<double> > &matrizA, const vector<vector<double> > &matrizB)
     {
         int rowsA = matrizA.size();
         int colsA = matrizA[0].size();
         int colsB = matrizB[0].size();
 
-        vector<vector<double>> matrizC(rowsA, vector<double>(colsB, 0.0));
+        vector<vector<double> > matrizC(rowsA, vector<double>(colsB, 0.0));
 
         for (int i = 0; i < rowsA; ++i)
         {
@@ -40,12 +41,12 @@ public:
         return resultado;
     }
 
-    vector<vector<double>> Transposta(const vector<vector<double>> &matriz)
+    vector<vector<double> > Transposta(const vector<vector<double> > &matriz)
     {
         int rows = matriz.size();
         int cols = matriz[0].size();
 
-        vector<vector<double>> matrizTransposta(cols, vector<double>(rows, 0.0));
+        vector<vector<double> > matrizTransposta(cols, vector<double>(rows, 0.0));
 
         for (int i = 0; i < rows; ++i)
         {
@@ -58,7 +59,7 @@ public:
         return matrizTransposta;
     }
 
-    double Determinante(const vector<vector<double>> &m)
+    double Determinante(const vector<vector<double> > &m)
     {
         int n = m.size();
         if (n == 1)
@@ -72,7 +73,7 @@ public:
         double det = 0.0;
         for (int i = 0; i < n; ++i)
         {
-            vector<vector<double>> submatrix;
+            vector<vector<double> > submatrix;
             for (int j = 1; j < n; ++j)
             {
                 vector<double> row;
@@ -94,20 +95,20 @@ public:
 class matrizInversa
 {
 public:
-    vector<vector<double>> Inversa(const vector<vector<double>> &matrizA, const vector<double> &independentes)
+    vector<vector<double> > Inversa(const vector<vector<double> > &matrizA, const vector<double> &independentes)
     {
         int n = matrizA.size();
         funcaoEx funcao;
         // Check if determinant is not equal to 0
         if (funcao.Determinante(matrizA) == 0)
         {
-            vector<vector<double>> result;
+            vector<vector<double> > result;
             result.push_back(vector<double>{0.0});
             return result;
         }
 
-        vector<vector<double>> inv(n, vector<double>(n, 0.0));
-        vector<vector<double>> mat(matrizA);
+        vector<vector<double> > inv(n, vector<double>(n, 0.0));
+        vector<vector<double> > mat(matrizA);
 
         for (int i = 0; i < n; ++i)
         {
@@ -168,7 +169,7 @@ public:
         return inv;
     }
 
-    vector<vector<double>> Inversa_(const vector<vector<double>> &matriz)
+    vector<vector<double> > Inversa_(const vector<vector<double> > &matriz)
     {
         return Inversa(matriz, vector<double>{}); // Empty vector for consistency
     }
@@ -177,12 +178,12 @@ public:
 class submatriz
 {
 public:
-    vector<vector<double>> Cria_submatriz(const vector<vector<double>> &matrizA, const vector<int> &vetorX)
+    vector<vector<double> > Cria_submatriz(const vector<vector<double> > &matrizA, const vector<int> &vetorX)
     {
         int numRows = matrizA.size();
         int numCols = vetorX.size();
 
-        vector<vector<double>> submatriz(numRows, vector<double>(numCols, 0.0));
+        vector<vector<double> > submatriz(numRows, vector<double>(numCols, 0.0));
 
         for (int j = 0; j < numRows; ++j)
         {
@@ -201,13 +202,13 @@ class separaMatriz
 public:
     struct SeparacaoResult
     {
-        vector<vector<double>> matrizA;
+        vector<vector<double> > matrizA;
         vector<int> basicas;
         vector<int> naoBasicas;
         vector<double> independentes;
     };
 
-    SeparacaoResult Separacao_da_matriz(const vector<double> &funcaoZ, const vector<vector<double>> &funcoes)
+    SeparacaoResult Separacao_da_matriz(const vector<double> &funcaoZ, const vector<vector<double> > &funcoes)
     {
         SeparacaoResult result;
 
@@ -285,11 +286,11 @@ public:
 class calculoRelativo
 {
 public:
-    vector<double> Calculo_x_relativo(const vector<vector<double>> &BInversa, const vector<double> &b)
+    vector<double> Calculo_x_relativo(const vector<vector<double> > &BInversa, const vector<double> &b)
     {
         funcaoEx func;
-        vector<vector<double>> bTransposta = func.Transposta(vector<vector<double>>({b}));
-        vector<vector<double>> xRelativoBasico = func.Multiplicacao_matrizes(BInversa, bTransposta);
+        vector<vector<double> > bTransposta = func.Transposta(vector<vector<double> >({b}));
+        vector<vector<double> > xRelativoBasico = func.Multiplicacao_matrizes(BInversa, bTransposta);
 
         // Extract the first row of xRelativoBasico to a vector
         vector<double> xRelativo = xRelativoBasico[0];
@@ -315,7 +316,7 @@ public:
 class calculaLamb
 {
 public:
-    vector<double> Calcula_lambda(const vector<double> &custoBasico, const vector<vector<double>> &basicaInversa)
+    vector<double> Calcula_lambda(const vector<double> &custoBasico, const vector<vector<double> > &basicaInversa)
     {
         int rows = basicaInversa.size();
         int cols = basicaInversa[0].size();
@@ -337,7 +338,7 @@ public:
 class custosRel
 {
 public:
-    vector<double> Custos_Relativos(const vector<double> &lambdaSimplex, const vector<double> &custoNaoBasico, const vector<vector<double>> &matrizNaoBasica)
+    vector<double> Custos_Relativos(const vector<double> &lambdaSimplex, const vector<double> &custoNaoBasico, const vector<vector<double> > &matrizNaoBasica)
     {
         int rows = matrizNaoBasica.size();
         int cols = matrizNaoBasica[0].size();
@@ -361,9 +362,9 @@ class calculk
 public:
     int Calcula_k(const vector<double> &custoRelativoNaoBasico)
     {
-        auto minElementIt = min_element(custoRelativoNaoBasico.begin(), custoRelativoNaoBasico.end());
-        int k = distance(custoRelativoNaoBasico.begin(), minElementIt);
-        return k;
+        float menor = *std::min_element(custoRelativoNaoBasico.begin(), custoRelativoNaoBasico.end());
+        int index = std::distance(custoRelativoNaoBasico.begin(), std::find(custoRelativoNaoBasico.begin(), custoRelativoNaoBasico.end(), menor));
+        return index;
     }
 };
 
@@ -386,7 +387,7 @@ public:
 class direcao
 {
 public:
-    vector<double> Direcao_simplex(const vector<vector<double>> &BasicaInversa, const vector<vector<double>> &matrizA, int k, const vector<int> &naoBasicas)
+    vector<double> Direcao_simplex(const vector<vector<double> > &BasicaInversa, const vector<vector<double> > &matrizA, int k, const vector<int> &naoBasicas)
     {
         int numRows = matrizA.size();
         funcaoEx fun;
@@ -397,7 +398,7 @@ public:
             colunaK[i] = matrizA[i][naoBasicas[k]];
         }
 
-        vector<vector<double>> colunaKMat(1, colunaK); // Convert colunaK to a matrix
+        vector<vector<double> > colunaKMat(1, colunaK); // Convert colunaK to a matrix
 
         vector<double> y = fun.Multiplicacao_matrizes(BasicaInversa, fun.Transposta(colunaKMat))[0]; // Extract the first row of the result
 
@@ -408,49 +409,37 @@ public:
 class CalculaL
 {
 public:
-    int Calcula_l(const vector<double> &y, const vector<double> &xRelativoBasico)
-    {
-        const double MAXINT = numeric_limits<double>::max(); // Define the maximum value for comparison
-
-        // Check if y is not greater than 0
-        bool seguro = false;
-        for (size_t i = 0; i < y.size(); ++i)
-        {
-            if (y[i] > 0)
-            {
-                seguro = true;
-                break;
-            }
+    int Calcula_l(const std::vector<double>& y, const std::vector<double>& xRelativoBasico) {
+    const double MAXINT = std::numeric_limits<double>::max(); // Defina MAXINT como o valor máximo de float
+    bool seguro = false;
+    for (size_t i = 0; i < y.size(); ++i) {
+        if (y[i] > 0) {
+            seguro = true;
+            break;
         }
-        if (!seguro)
-        {
-            return -1; // Returning -1 to indicate "false"
-        }
-
-        vector<double> razoes;
-        for (size_t i = 0; i < xRelativoBasico.size(); ++i)
-        {
-            if (y[i] <= 0)
-            {
-                razoes.push_back(MAXINT);
-            }
-            else
-            {
-                razoes.push_back(xRelativoBasico[i] / y[i]);
-            }
-        }
-
-        double passo = *min_element(razoes.begin(), razoes.end());
-        int l = distance(razoes.begin(), find(razoes.begin(), razoes.end(), passo));
-
-        return l;
     }
+    if (!seguro) {
+        return -1; // Retorna -1 para indicar que não há solução ótima finita
+    }
+    std::vector<float> razoes;
+    for (size_t i = 0; i < xRelativoBasico.size(); ++i) {
+        if (y[i] <= 0) {
+            razoes.push_back(MAXINT);
+        } else {
+            razoes.push_back(xRelativoBasico[i] / y[i]);
+        }
+    }
+    float passo = *std::min_element(razoes.begin(), razoes.end());
+    int l = std::distance(razoes.begin(), std::find(razoes.begin(), razoes.end(), passo));
+
+    return l;
+}
 };
 
 class TrocaKAndL
 {
 public:
-    pair<vector<int>, vector<int>> Troca_k_l(const vector<int> &basicas, const vector<int> &naoBasicas, int k, int l)
+    pair<vector<int>, vector<int> > Troca_k_l(const vector<int> &basicas, const vector<int> &naoBasicas, int k, int l)
     {
         vector<int> newBasicas = basicas;
         vector<int> newNaoBasicas = naoBasicas;
@@ -477,88 +466,89 @@ public:
     }
 };
 
-class leitura
-{
+class leitura{
 public:
     struct SeparacaoLeituras
     {
         vector<double> funcaoZ;
         string minMax;
-        vector<vector<double>> funcoes;
+        vector<vector<double> > funcoes;
     };
 
     SeparacaoLeituras Leituras()
     {
         SeparacaoLeituras leitura;
-        string entrada;
+        string inputString;
         int numeroFuncoes;
-
-        cout << "digite a funcao z separada por espacos (2 -4 3): ";
-        getline(cin, entrada);
+        
+        cout << "Digite a função z separada por espaços (2 -4 3): ";
+        getline(cin, inputString);
         int pos = 0;
-        while ((pos = entrada.find(' ')) != string::npos)
-        {
-            leitura.funcaoZ.push_back(stod(entrada.substr(0, pos)));
-            entrada.erase(0, pos + 1);
+        while ((pos = inputString.find(' ')) != std::string::npos) {
+            leitura.funcaoZ.push_back(std::stof(inputString.substr(0, pos)));
+            inputString.erase(0, pos + 1);
         }
-        leitura.funcaoZ.push_back(stod(entrada));
-        cout << endl;
+        leitura.funcaoZ.push_back(std::stof(inputString));
 
-        cout << "digite min para minimizar e max para maximizar: ";
+        cout << "Digite 'min' para minimizar ou 'max' para maximizar: ";
         cin >> leitura.minMax;
-        cout << endl;
-
-        cout << "qual o numero de funcoes? ";
+        
+        cout << "Digite o número de funções: ";
         cin >> numeroFuncoes;
-        cout << endl;
-        cout << "insira as funcoes separadas por enter:" << endl;
-
-        for (int i = 0; i < numeroFuncoes; ++i)
-        {
-            string novaFuncao;
-            getline(cin, novaFuncao);
-            vector<double> funcaoAtual;
-            int pos = 0;
-
-            while ((pos = novaFuncao.find(' ')) != string::npos)
-            {
-                if (novaFuncao.substr(0, pos) != novaFuncao.substr(novaFuncao.size() - 2))
-                {
-                    funcaoAtual.push_back(stod(novaFuncao.substr(0, pos)));
+    
+        cout << "Insira as funções separadas por enter:" << endl;
+        for (int i = 0; i < numeroFuncoes; ++i) {
+            cout << "Digite a função " << i + 1 << " separada por espaços (2 -4 3 <= 5): ";
+            cin.ignore();
+            getline(cin, inputString);
+            pos = 0;
+            vector<double> novaFuncao;
+            while ((pos = inputString.find(' ')) != std::string::npos) {
+                if (inputString[pos - 1] != '<' && inputString[pos - 1] != '=' && inputString[pos] != '=') {
+                    novaFuncao.push_back(std::stof(inputString.substr(0, pos)));
                 }
-                novaFuncao.erase(0, pos + 1);
+                inputString.erase(0, pos + 1);
             }
-            leitura.funcoes.push_back(funcaoAtual);
+            novaFuncao.push_back(std::stof(inputString));
+            leitura.funcoes.push_back(novaFuncao);
         }
 
         return leitura;
     }
 };
+
 /// @brief
 /// @return
 int main()
 {
-    leitura leituraInstance; // Create an instance of the leitura class
-    leitura::SeparacaoLeituras leitura = leituraInstance.Leituras();                                             // funcaoZ, funcoes, minMax = Leitura();
+    //Criação de objetos auxiliares
+    submatriz SubMatrizAux;
+    matrizInversa inversaAux;
+    calculoRelativo RelativoAux;
+    fcusto CustoAux;
+    calculaLamb LambidaAux;
+    custosRel CustoRelativoAux;
+    calculk CalculaAux;
+    otimil OtimilidadeAux;
+    direcao DirecaoAux;
+    CalculaL CalculaLAux;
+    TrocaKAndL TrocaKAux;
+    ValorFuncao ValorAux;
+    leitura LeituraAux;
+    separaMatriz MatrizAux;
 
-    separaMatriz separaMatrizInstance;
-    separaMatriz::SeparacaoResult matriz = separaMatrizInstance.Separacao_da_matriz(leitura.funcaoZ, leitura.funcoes); // matrizA, basicas, naoBasicas, independentes = Separacao_da_matriz(funcaoZ, funcoes)
-
-    // indFixo = deepcopy(independentes)
+    leitura::SeparacaoLeituras leitura = LeituraAux.Leituras();                                             
+    separaMatriz::SeparacaoResult matriz = MatrizAux.Separacao_da_matriz(leitura.funcaoZ, leitura.funcoes);
+    
     separaMatriz::SeparacaoResult indFixo;
     indFixo.independentes = matriz.independentes;
-
-    // funcaoFin = deepcopy(funcaoZ)
+    
     leitura::SeparacaoLeituras funcaoFin;
-    funcaoFin.funcaoZ = leitura.funcaoZ;
+    funcaoFin.funcaoZ = leitura.funcaoZ; 
 
-    // tam = len(funcaoZ)
-    int tam = leitura.funcaoZ.size();
+    int tam = leitura.funcaoZ.size(); 
 
-    // if(minMax == 'max'):
-    //     for i in range(tam):
-    //         funcaoZ[i] *= -1
-    if (leitura.minMax == 'max')
+    if (leitura.minMax == "max")
     {
         for (int i = 0; i < tam; i++)
         {
@@ -566,62 +556,32 @@ int main()
         }
     }
 
-    // it = 1
     int it = 1;
-
-    // maxit = 10
     int maxit = 10;
-
-    // solucaoOtima = []
-    vector<double> solucaoOtima = [];
-
-    // deu = True
+    vector<double> solucaoOtima = {0};
     bool funciona = true;
 
-    // while(it < maxit):
     while (it < maxit)
     {
-        //     print()
-        //     independentes = indFixo
-        //     print('it: ', it)
-        //     matrizBasica = Cria_submatriz(matrizA, basicas)
-        //     matrizNaoBasica = Cria_submatriz(matrizA, naoBasicas)
-        //     //print('basica: ',matrizBasica)
         cout << endl;
         matriz.independentes = indFixo.independentes;
         cout << "it: " << it << endl;
-        vector<double> matrizBasicas = submatriz::Cria_submatriz(matriz.matrizA, matriz.basicas);
-        vector<double> matrizNaoBasicas = submatriz::Cria_submatriz(matriz.matrizA, matriz.naoBasicas);
-        //     matrizBasicaInversa, independentes = Inversa(
-        //         matrizBasica, independentes)
-        //     if(matrizBasicaInversa == False):
-        //         deu = False
-        //         break
-        vector<vector<double>> matrizBasicaInversa = matrizInversa::Inversa(matriz.matrizA, matriz.independentes);
-        if (matrizBasicaInversa == false)
+        vector<vector<double>> matrizBasicas = SubMatrizAux.Cria_submatriz(matriz.matrizA, matriz.basicas);
+        vector<vector<double>> matrizNaoBasicas = SubMatrizAux.Cria_submatriz(matriz.matrizA, matriz.naoBasicas);
+        vector<vector<double> > matrizBasicaInversa = inversaAux.Inversa(matriz.matrizA, matriz.independentes);
+        if (matrizBasicaInversa != matrizBasicaInversa)
         {
             funciona = false;
             break;
         }
-        //     xRelativo = Calculo_x_relativo(matrizBasicaInversa, independentes)
-        vector<double> xRelativo = calculoRelativo::Calculo_x_relativo(matrizBasicaInversa, matriz.independentes);
-        //     custoBasico = Custo(funcaoZ, basicas)
-        //     lambdaTransposto = Calcula_lambda(custoBasico, matrizBasicaInversa)
-        vector<double> custoBasico = fcusto::Custo(leitura.funcaoZ, matriz.basicas);
-        vector<double> lambdaTransposto = calculaLamb::Calcula_lambda(custoBasico, matrizBasicaInversa);
-        //     custoNaoBasico = Custo(funcaoZ, naoBasicas)
-        //     custoRelativoNaoBasico = Custos_Relativos(lambdaTransposto, custoNaoBasico, matrizNaoBasica)
-        vector<double> custoNaoBasico = fcusto::Custo(leitura.funcaoZ, matriz.naoBasicas);
-        vector<double> custoRelativoNaoBasico = custosRel::Custos_Relativos(lambdaTransposto, custoNaoBasico, matrizNaoBasicas);
-        //     k = Calcula_k(custoRelativoNaoBasico)
-        int k = calculk::Calcula_k(custoRelativoNaoBasico);
-            //     if(Otimalidade(custoRelativoNaoBasico, k)):
-            //         print("Otimo!")
-            //         solucaoOtima = xRelativo
-            //         deu = True
-            //         break
-            //     print("Nao otimo!")
-        if (otimil::Otimalidade(custoRelativoNaoBasico, k))
+        vector<double> xRelativo = RelativoAux.Calculo_x_relativo(matrizBasicaInversa, matriz.independentes);
+        vector<double> custoBasico = CustoAux.Custo(leitura.funcaoZ, matriz.basicas);
+        vector<double> lambdaTransposto = LambidaAux.Calcula_lambda(custoBasico, matrizBasicaInversa);
+        vector<double> custoNaoBasico = CustoAux.Custo(leitura.funcaoZ, matriz.naoBasicas);
+        vector<double> custoRelativoNaoBasico = CustoRelativoAux.Custos_Relativos(lambdaTransposto, custoNaoBasico, matrizNaoBasicas);
+        int k = CalculaAux. Calcula_k(custoRelativoNaoBasico);
+
+        if (OtimilidadeAux.Otimalidade(custoRelativoNaoBasico, k))
         {
             cout << "Otimo!" << endl;
             solucaoOtima = xRelativo;
@@ -629,44 +589,30 @@ int main()
             break;
         }
         cout << "Não otimo!" << endl;
-        //     y = Direcao_simplex(matrizBasicaInversa, matrizA, k, naoBasicas)
-        vector<double> y = direcao::Direcao_simplex(matrizBasicaInversa, matriz.matrizA, k, matriz.naoBasicas);
-        //     l = Calcula_l(y, xRelativo)
-        //     if(isinstance(l, bool) and l == False):
-        //         deu = False
-        //         break
-        int l = CalculaL::Calcula_l(y, xRelativo);
+        
+        vector<double> y = DirecaoAux.Direcao_simplex(matrizBasicaInversa, matriz.matrizA, k, matriz.naoBasicas);
+       
+        int l = CalculaLAux.Calcula_l(y, xRelativo);
         if (l == false)
         {
             funciona = false;
             break;
         }
-        //     basicas, naoBasicas = Troca_k_l(basicas, naoBasicas, k, l)
-        pair<vector<int>, vector<int>> TrocaAux = TrocaKAndL::Troca_k_l(matriz.basicas, matriz.naoBasicas, k, l);
+
+        pair<vector<int>, vector<int> > TrocaAux = TrocaKAux.Troca_k_l(matriz.basicas, matriz.naoBasicas, k, l);
         matriz.basicas = TrocaAux.first;
         matriz.naoBasicas = TrocaAux.second;
-        //     it += 1
         it += 1;
     }
-    // # fim do laco de repeticao simplex
+    // fim do laco de repeticao simplex
 
-    // if(deu):
-    //     print("A solucao factivel otima eh:")
-    //     tam = len(solucaoOtima)
-    //     for i in range(tam):
-    //         print(f'x{basicas[i]} = {solucaoOtima[i]}, ', end=' ')
-    //     print(f'z = {Valor_funcao(funcaoFin, solucaoOtima, basicas)}')
-    // else:
-    //     print('Em algum momento nao deu para fazer a inversa porque o determinante deu 0\nou a direcao simplex deu <= 0')
     if (funciona)
     {
         cout << "A solucao factivel otima é:" << endl;
         tam = solucaoOtima.size();
         for (int i = 0; i < tam; i++)
-        {
-            cout << "" << endl;
-        }
-        cout << "" << endl;
+            cout << "x"<< matriz.basicas[i] <<" = "<<solucaoOtima[i] << "end= ";
+        cout << "z = "<< ValorAux.Valor_funcao(funcaoFin.funcaoZ, solucaoOtima, matriz.basicas) << endl;
     }
     else
     {
