@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="Simplex" content="Simplex">
+    <title>Simplex</title>
+    <script src="https://unpkg.com/mathjs/lib/browser/math.js"></script>
+</head>
+<body>
+  <script>
+    // // Importações
+// const math = require('mathjs');
+// const prompt = require('prompt');
+
+// Funções extras
+function Multiplicacao_matrizes(matrizA, matrizB) {
+    return math.multiply(matrizA, matrizB);
+}
+
+// Função auxiliar para realizar cópias profundas de objetos
+function deepcopy(obj) {
+    return JSON.parse(JSON.stringify(obj));
+}
+
+function Multiplicacao_vetores(vetorA, vetorB) {
+    return math.dot(vetorA, vetorB);
+}
+
+function Transposta(matriz) {
+    return math.transpose(matriz);
+}
+
+function Determinante(m) {
+    return math.det(m);
+}
+
+function Inversa(matrizA, independentes) {
+    // determinante != 0?
+    if (Determinante(matrizA) == 0) {
+        return false;
+    }
+
+    const n = matrizA.length;
+
+    const inv = math.identity(n)._data;
+
+    // Performing elementary operations
+    for (let i = 0; i < n; i++) {
+        if (matrizA[i][i] == 0) {
+            let c = 1;
+            while (i + c < n && matrizA[i + c][i] == 0) {
+                c++;
+            }
+            if (i + c == n) {
+                break;
+            }
+
+            let j = i;
+
+            for (let k = 0; k < n; k++) {
+                const temp = matrizA[j][k];
+                const temp2 = inv[j][k];
+
+                matrizA[j][k] = matrizA[j + c][k];
+                inv[j][k] = inv[j + c][k];
+
+                matrizA[j + c][k] = temp;
+                inv[j + c][k] = temp2;
+            }
+        }
+
+        for (let j = 0; j < n; j++) {
+            if (i != j) {
+                const p = matrizA[j][i] / matrizA[i][i];
+
+                for (let k = 0; k < n; k++) {
+                    matrizA[j][k] -= matrizA[i][k] * p;
+                    inv[j][k] -= inv[i][k] * p;
+                }
+            }
+        }
+    }
+
+    for (let i = 0; i < n; i++) {
+        if (matrizA[i][i] != 1) {
+            const p = 1 / matrizA[i][i];
+            for (let j = 0; j < n; j++) {
+                matrizA[i][j] *= p;
+                inv[i][j] *= p;
+            }
+        }
+    }
+
+    return [inv, independentes];
+}
+
+function Cria_submatriz(matrizA, vetorX) {
+    const submatriz = [];
+    for (let j = 0; j < matrizA.length; j++) {
+        const linha = [];
+        for (let i = 0; i < vetorX.length; i++) {
+            linha.push(matrizA[j][vetorX[i]]);
+        }
+        submatriz.push(linha);
+    }
+    return submatriz;
+}
+
+// SIMPLEX, SIMPLAO, COMPLEX
+
+// Fase I:
+// 1. Determine inicialmente uma parti¸c˜ao b´asica fact´ıvel A=[B,N]. A rigor, precisa-se de
+// dois vetores de ´ındices b´asicos e n˜ao-b´asicos:
+// (B1, B2, ..., Bm) e (N1, N2, ..., Nn−m)
+// Os vetores das vari´aveis b´asicas e n˜ao-b´asicas, respectivamente:
+// x transpost basico = (xB1, xB2, ..., xBm ) e
+// x transposto nao basico = (xN1, xN2, ..., xNn−m ).
+
+function Separacao_da_matriz(funcaoZ, funcoes) {
+    const inequacoes = [];
+    const tam = funcoes.length;
+
+    for (let i = 0; i < tam; i++) {
+        const condicao = funcoes[i][funcoes[i].length - 2];
+
+        if (condicao !== '=') {
+            funcaoZ.push(0.0);
+
+            if (condicao === '<=') {
+                inequacoes.push(1.0);
+            } else {
+                inequacoes.push(-1.0);
+            }
+        } else {
+            inequacoes.push(0.0);
+        }
+    }
+
+    const matrizA = [];
+    for (let i = 0; i < tam; i++) {
+        const linha = funcoes[i].slice(0, funcoes[i].length - 2);
+        const tam2 = inequacoes.length;
+
+        for (let j = 0; j < tam2; j++) {
+            if (i === j) {
+                linha.push(inequacoes[j]);
+            } else {
+                linha.push(0.0);
+            }
+        }
+
+        matrizA.push(linha);
+    }
+
+    const basicas = [];
+    const naoBasicas = [];
+    const tam3 = funcaoZ.length;
+
+    for (let i = 0; i < tam3; i++) {
+        if (i < tam3 - tam) {
+            naoBasicas.push(i);
+        } else {
+            basicas.push(i);
+        }
+    }
+
+    basicas.sort((a, b) => a - b);
+    naoBasicas.sort((a, b) => a - b);
+
+    const independentes = [];
+    for (let i = 0; i < tam; i++) {
+        independentes.push(funcoes[i][funcoes[i].length - 1]);
+    }
+
+    return [matrizA, basicas, naoBasicas, independentes];
+}
+
+
+// 2. Faça Iterções ← 1.
+// Fase II: {Inicio da iteração simplex}
+//  Passo 1: {c´alculo da solição básica}
+//       x relativo basico ← B^−1*b (equivalentemente, resolva o sistema B * x relativo basico = b)
+//       x relativo nao basico ← 0
+// !!!(devido a analises, o x relativo nao basico nao foi feito, afinal ele nao aparece mais)!!!
+
+
+function Calculo_x_relativo(BInversa, b) {
+    const xRelativoBasico = Multiplicacao_matrizes(BInversa, Transposta([b]));
+    return xRelativoBasico;
+}
+
+function Custo(funcaoZ, variaveis) {
+    const custoBasico = [];
+
+    for (const index of variaveis) {
+        custoBasico.push(funcaoZ[index]);
+    }
+
+    return custoBasico;
+}
+
+function Calcula_lambda(custoBasico, basicaInversa) {
+    const lambdaSimplex = Multiplicacao_matrizes(custoBasico, basicaInversa);
+    return lambdaSimplex;
+}
+
+// Custos Relativos
+function Custos_Relativos(lambdaSimplex, custoNaoBasico, matrizNaoBasica) {
+    const naoBasicaTransposta = Transposta(matrizNaoBasica);
+    for (let i = 0; i < custoNaoBasico.length; i++) {
+        custoNaoBasico[i] -= Multiplicacao_vetores(lambdaSimplex, naoBasicaTransposta[i]);
+    }
+    return custoNaoBasico;
+}
+
+function Calcula_k(custoRelativoNaoBasico) {
+    const menor = Math.min(...custoRelativoNaoBasico);
+    return custoRelativoNaoBasico.indexOf(menor);
+}
+
+// Passo 3: Teste de otimalidade
+function Otimalidade(custoRelativoNaoBasico, k) {
+    if (custoRelativoNaoBasico[k] >= 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+// Passo 4: Cálculo da direção simplex
+function Direcao_simplex(BasicaInversa, matrizA, k, naoBasicas) {
+    const colunaK = new Array(matrizA.length).fill(0);
+    for (let i = 0; i < matrizA.length; i++) {
+        colunaK[i] = matrizA[i][naoBasicas[k]];
+    }
+    const colunaKTransposta = Transposta(colunaK);
+    const y = Multiplicacao_matrizes(BasicaInversa, colunaKTransposta);
+    return y;
+}
+
+// Passo 5: Determinação do passo e variável a sair da base
+function Calcula_l(y, xRelativoBasico) {
+    let seguro = false;
+    for (let i = 0; i < y.length; i++) {
+        if (y[i] > 0) {
+            seguro = true;
+            break;
+        }
+    }
+    if (!seguro) {
+        return false;
+    }
+
+    const razoes = [];
+    for (let i = 0; i < xRelativoBasico.length; i++) {
+        if (y[i] <= 0) {
+            razoes.push(Number.POSITIVE_INFINITY);
+        } else {
+            razoes.push(xRelativoBasico[i] / y[i]);
+        }
+    }
+
+    const passo = Math.min(...razoes);
+    const l = razoes.indexOf(passo);
+
+    return l;
+}
+// Passo 6: Atualização: nova partição básica, troque a l-ésima coluna de B pela k-ésima coluna de N
+function Troca_k_l(basicas, naoBasicas, k, l) {
+    const aux = basicas[l];
+    basicas[l] = naoBasicas[k];
+    naoBasicas[k] = aux;
+    return [basicas, naoBasicas];
+}
+
+// 3. Calcule o valor da função objetivo f(x) => FIM.
+function Valor_funcao(funcaoZ, xRelativoBasico, basicas) {
+    let resultado = 0;
+    for (let i = 0; i < xRelativoBasico.length; i++) {
+        resultado += funcaoZ[basicas[i]] * xRelativoBasico[i];
+    }
+    return resultado;
+}
+
+// Função Leitura
+function Leitura() {
+    const funcaoZ = prompt("Digite a função z separada por espaços (2 -4 3): ")
+        .split(' ')
+        .map(Number);
+
+    const minMax = prompt("Digite 'min' para minimizar ou 'max' para maximizar");
+
+    const numeroFuncoes = parseInt(prompt("Qual o número de funções? "));
+    console.log("Insira as funções separadas por enter:");
+    const funcoes = [];
+
+    for (let i = 0; i < numeroFuncoes; i++) {
+        const novaFuncao = prompt(`Digite a função ${i + 1} separada por espaços (2 -4 3 <= 5): `)
+            .split(' ')
+            .map(Number);
+        funcoes.push(novaFuncao);
+    }
+
+    return [funcaoZ, funcoes, minMax];
+}
+
+function main() {
+    const [funcaoZ, funcoes, minMax] = Leitura();
+    console.log();
+
+    let [matrizA, basicas, naoBasicas, independentes] = Separacao_da_matriz(funcaoZ, funcoes);
+    let indFixo = deepcopy(independentes);
+    let funcaoFin = deepcopy(funcaoZ);
+    let tam = funcaoZ.length;
+
+    if (minMax === 'max') {
+        for (let i = 0; i < tam; i++) {
+            funcaoZ[i] *= -1;
+        }
+    }
+
+    let it = 1;
+    const maxit = 10;
+    let solucaoOtima = [];
+    let deu = true;
+
+    while (it < maxit) {
+        console.log();
+        independentes = indFixo;
+        console.log('it: ', it);
+
+        const matrizBasica = Cria_submatriz(matrizA, basicas);
+        const matrizNaoBasica = Cria_submatriz(matrizA, naoBasicas);
+
+        const [matrizBasicaInversa, independentesInversa] = Inversa(matrizBasica, independentes);
+
+        if (matrizBasicaInversa === false) {
+            deu = false;
+            break;
+        }
+
+        const xRelativo = Calculo_x_relativo(matrizBasicaInversa, independentesInversa);
+
+        const custoBasico = Custo(funcaoZ, basicas);
+        const lambdaTransposto = Calcula_lambda(custoBasico, matrizBasicaInversa);
+
+        const custoNaoBasico = Custo(funcaoZ, naoBasicas);
+        const custoRelativoNaoBasico = Custos_Relativos(lambdaTransposto, custoNaoBasico, matrizNaoBasica);
+
+        const k = Calcula_k(custoRelativoNaoBasico);
+
+        if (Otimalidade(custoRelativoNaoBasico, k)) {
+            console.log("Ótimo!");
+            solucaoOtima = xRelativo;
+            deu = true;
+            break;
+        }
+        console.log("Não ótimo!");
+
+        const y = Direcao_simplex(matrizBasicaInversa, matrizA, k, naoBasicas);
+
+        const l = Calcula_l(y, xRelativo);
+
+        if (typeof l === 'boolean' && l === false) {
+            deu = false;
+            break;
+        }
+
+        [basicas, naoBasicas] = Troca_k_l(basicas, naoBasicas, k, l);
+
+        it++;
+    }
+
+    if (deu) {
+        console.log("A solução factível ótima é:");
+        const tam = solucaoOtima.length;
+        for (let i = 0; i < tam; i++) {
+            console.log(`x${basicas[i]} = ${solucaoOtima[i]}, `);
+        }
+        console.log(`z = ${Valor_funcao(funcaoFin, solucaoOtima, basicas)}`);
+    } else {
+        console.log('Em algum momento não foi possível calcular a inversa porque o determinante foi 0 ou a direção simplex foi <= 0');
+    }
+}
+
+main();
+  </script>
+</body>
+</html>
