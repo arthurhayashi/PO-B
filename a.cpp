@@ -538,8 +538,11 @@ public:
 /// @return
 int main()
 {
-    leitura::SeparacaoLeituras leitura = leitura::Leituras();                                                   // funcaoZ, funcoes, minMax = Leitura();
-    separaMatriz::SeparacaoResult matriz = separaMatriz::Separacao_da_matriz(leitura.funcaoZ, leitura.funcoes); // matrizA, basicas, naoBasicas, independentes = Separacao_da_matriz(funcaoZ, funcoes)
+    leitura leituraInstance; // Create an instance of the leitura class
+    leitura::SeparacaoLeituras leitura = leituraInstance.Leituras();                                             // funcaoZ, funcoes, minMax = Leitura();
+
+    separaMatriz separaMatrizInstance;
+    separaMatriz::SeparacaoResult matriz = separaMatrizInstance.Separacao_da_matriz(leitura.funcaoZ, leitura.funcoes); // matrizA, basicas, naoBasicas, independentes = Separacao_da_matriz(funcaoZ, funcoes)
 
     // indFixo = deepcopy(independentes)
     separaMatriz::SeparacaoResult indFixo;
