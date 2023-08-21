@@ -466,55 +466,67 @@ public:
     }
 };
 
-class leitura{
+class leitura {
 public:
-    struct SeparacaoLeituras
-    {
+    struct SeparacaoLeituras {
         vector<double> funcaoZ;
         string minMax;
-        vector<vector<double> > funcoes;
+        vector<vector<double>> funcoes;
     };
 
-    SeparacaoLeituras Leituras()
-    {
+    SeparacaoLeituras Leituras() {
         SeparacaoLeituras leitura;
         string inputString;
         int numeroFuncoes;
-        
+
         cout << "Digite a função z separada por espaços (2 -4 3): ";
         getline(cin, inputString);
-        int pos = 0;
-        while ((pos = inputString.find(' ')) != std::string::npos) {
-            leitura.funcaoZ.push_back(std::stof(inputString.substr(0, pos)));
-            inputString.erase(0, pos + 1);
-        }
-        leitura.funcaoZ.push_back(std::stof(inputString));
+        parseInputToVector(inputString, leitura.funcaoZ, true);
 
         cout << "Digite 'min' para minimizar ou 'max' para maximizar: ";
         cin >> leitura.minMax;
-        
+
         cout << "Digite o número de funções: ";
         cin >> numeroFuncoes;
-    
+
         cout << "Insira as funções separadas por enter:" << endl;
+        cin.ignore(); // Clear newline character
         for (int i = 0; i < numeroFuncoes; ++i) {
             cout << "Digite a função " << i + 1 << " separada por espaços (2 -4 3 <= 5): ";
-            cin.ignore();
             getline(cin, inputString);
-            pos = 0;
             vector<double> novaFuncao;
-            while ((pos = inputString.find(' ')) != std::string::npos) {
-                if (inputString[pos - 1] != '<' && inputString[pos - 1] != '=' && inputString[pos] != '=') {
-                    novaFuncao.push_back(std::stof(inputString.substr(0, pos)));
-                }
-                inputString.erase(0, pos + 1);
-            }
-            novaFuncao.push_back(std::stof(inputString));
+            parseInputToVector(inputString, novaFuncao, false);
             leitura.funcoes.push_back(novaFuncao);
-            cout <<"Passa por aqui loop for func"<< endl;
         }
-        cout <<"Passou por aqui Termino Loop"<< endl;
+
         return leitura;
+    }
+
+    void parseInputToVector(const string& inputString, vector<double>& outputVector, bool allowSymbols) {
+        istringstream iss(inputString);
+        string token;
+        while (iss >> token) {
+            if (allowSymbols) {
+                outputVector.push_back(parseToken(token));
+            } else {
+                try {
+                    double value = parseToken(token);
+                    outputVector.push_back(value);
+                } catch (const std::exception&) {
+                    cout << "Entrada inválida: " << token << endl;
+                    outputVector.clear(); // Clear the vector if parsing fails
+                    break;
+                }
+            }
+        }
+    }
+
+    double parseToken(const string& token) {
+        try {
+            return stod(token);
+        } catch (const std::exception&) {
+            return 0.0; // Treat symbols as 0.0
+        }
     }
 };
 
